@@ -5,12 +5,12 @@ import {
   I18nConfig,
   OccConfig,
   provideConfig,
-  SiteContextConfig,
+  SiteContextConfig
 } from '@spartacus/core';
 import {
   defaultCmsContentProviders,
   layoutConfig,
-  mediaConfig,
+  mediaConfig
 } from '@spartacus/storefront';
 
 @NgModule({
@@ -47,6 +47,31 @@ import {
         level: '4.3',
       },
     }),
+    provideConfig(<OccConfig>{
+      backend: {
+        occ: {
+          baseUrl: 'https://localhost:9002',
+        }
+      },
+    }),
+    provideConfig(<SiteContextConfig>{
+      context: {
+        currency: ['USD'],
+        language: ['en'],
+      },
+    }),
+    provideConfig(<I18nConfig>{
+      i18n: {
+        resources: translations,
+        chunks: translationChunksConfig,
+        fallbackLang: 'en'
+      },
+    }),
+    provideConfig(<FeaturesConfig>{
+      features: {
+        level: '4.3'
+      }
+    })
   ],
 })
-export class SpartacusConfigurationModule {}
+export class SpartacusConfigurationModule { }
