@@ -1,16 +1,24 @@
-import { HttpClientModule } from "@angular/common/http";
+import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { BrowserModule, BrowserTransferStateModule } from '@angular/platform-browser';
-import { EffectsModule } from "@ngrx/effects";
-import { StoreModule } from "@ngrx/store";
-import { AppRoutingModule } from "@spartacus/storefront";
+import {
+  BrowserModule,
+  BrowserTransferStateModule,
+} from '@angular/platform-browser';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreModule } from '@ngrx/store';
+import {
+  AppRoutingModule,
+  OutletPosition,
+  provideOutlet,
+} from '@spartacus/storefront';
 import { AppComponent } from './app.component';
+import {
+  BottomHeaderSlotModule,
+  BottomHeaderSlotComponent,
+} from './custom/bottom-header-slot.component';
 import { SpartacusModule } from './spartacus/spartacus.module';
 
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
     HttpClientModule,
@@ -18,9 +26,17 @@ import { SpartacusModule } from './spartacus/spartacus.module';
     StoreModule.forRoot({}),
     EffectsModule.forRoot([]),
     SpartacusModule,
-    BrowserTransferStateModule
+    BrowserTransferStateModule,
+    BottomHeaderSlotModule,
   ],
-  providers: [],
-  bootstrap: [AppComponent]
+  providers: [
+    provideOutlet({
+      id: 'BottomHeaderSlot',
+      position: OutletPosition.REPLACE,
+      component: BottomHeaderSlotComponent,
+    }),
+  ],
+  declarations: [AppComponent],
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
