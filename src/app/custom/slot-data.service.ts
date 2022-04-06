@@ -6,7 +6,7 @@ import {
 } from '@spartacus/core';
 import { OutletContextData, PageSlotComponent } from '@spartacus/storefront';
 import { from, OperatorFunction, Subscription } from 'rxjs';
-import { switchMap, filter, first, toArray } from 'rxjs/operators';
+import { switchMap, filter, first, toArray, tap } from 'rxjs/operators';
 
 export const provideSlotData = () => {
   return [SlotDataService];
@@ -27,8 +27,11 @@ export class SlotDataService {
       return;
     }
 
-    const sub = contextData.context$
+    const sub = cmsService
+      .getCurrentPage()
       .pipe(
+        removeNil(),
+        switchMap(() => contextData.context$),
         switchMap((context) => context.components$),
         mapToComponentData(cmsService)
       )
@@ -58,6 +61,6 @@ export function mapToComponentData(cmsService: CmsService) {
 
 function removeNil<T>() {
   return filter(
-    (x: T) => typeof x !== 'undefined' || x !== null
+    (x: T) => typeof x !== 'undefined' && x !== null
   ) as OperatorFunction<T, Exclude<T, undefined | null>>;
 }
