@@ -48,14 +48,16 @@ export class SlotDataService {
 export function mapToComponentData(cmsService: CmsService) {
   return switchMap((components: ContentSlotComponentData[]) =>
     from(components.map((c) => c.uid)).pipe(
-      removeNil<string>(),
+      removeNil(),
       switchMap((uid) => cmsService.getComponentData(uid).pipe(first())),
-      removeNil<CmsComponent>(),
+      removeNil(),
       toArray()
     )
   );
 }
 
-function removeNil<T>(): OperatorFunction<any, T> {
-  return filter((x) => typeof x !== 'undefined' || x !== null);
+function removeNil<T>() {
+  return filter(
+    (x: T) => typeof x !== 'undefined' || x !== null
+  ) as OperatorFunction<T, Exclude<T, undefined | null>>;
 }
