@@ -6,7 +6,13 @@ import {
 } from '@spartacus/core';
 import { OutletContextData, PageSlotComponent } from '@spartacus/storefront';
 import { from, OperatorFunction, Subscription } from 'rxjs';
-import { switchMap, filter, first, toArray, tap } from 'rxjs/operators';
+import {
+  switchMap,
+  filter,
+  first,
+  toArray,
+  distinctUntilChanged,
+} from 'rxjs/operators';
 
 export const provideSlotData = () => {
   return [SlotDataService];
@@ -33,7 +39,8 @@ export class SlotDataService {
         removeNil(),
         switchMap(() => contextData.context$),
         switchMap((context) => context.components$),
-        mapToComponentData(cmsService)
+        mapToComponentData(cmsService),
+        distinctUntilChanged(compareJSON)
       )
       .subscribe((components) => {
         this.components = components;
@@ -63,4 +70,8 @@ function removeNil<T>() {
   return filter(
     (x: T) => typeof x !== 'undefined' && x !== null
   ) as OperatorFunction<T, Exclude<T, undefined | null>>;
+}
+
+function compareJSON(a: any, b: any) {
+  return JSON.stringify(a) === JSON.stringify(b);
 }
