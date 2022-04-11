@@ -10,7 +10,7 @@ import { provideSlotData, SlotDataService } from './slot-data.service';
       *ngIf="freeShippingLink as link"
       [class]="link.styleClasses"
       [style]="link.styleAttributes"
-      [target]="link.external ? '_blank' : '_self'"
+      [target]="link.target === 'true' ? '_blank' : '_self'"
       [routerLink]="link.url"
       routerLinkActive="slot-hidden"
     >
