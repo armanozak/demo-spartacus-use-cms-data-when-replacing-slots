@@ -1,43 +1,34 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
 import { CmsLinkComponent } from '@spartacus/core';
+import { FreeShippingLinkModule } from './free-shipping-link.component';
 import { provideSlotData, SlotDataService } from './slot-data.service';
 
 @Component({
   template: `
-    <a
-      *ngIf="freeShippingLink as link"
-      [class]="link.styleClasses"
-      [style]="link.styleAttributes"
-      [target]="link.target === 'true' ? '_blank' : '_self'"
-      [routerLink]="link.url"
-      routerLinkActive="slot-hidden"
+    <ng-container
+      *ngFor="let component of slotData.components; trackBy: trackById"
     >
-      {{ link.linkName }}
-    </a>
+      <ng-container [ngSwitch]="component.name">
+        <app-free-shipping-link
+          *ngSwitchCase="'FreeShippingLink'"
+          [component]="component"
+        ></app-free-shipping-link>
+      </ng-container>
+    </ng-container>
   `,
-  styles: [
-    `
-      .slot-hidden {
-        display: none !important;
-      }
-    `,
-  ],
   viewProviders: [provideSlotData()],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BottomHeaderSlotComponent {
-  get freeShippingLink(): CmsLinkComponent {
-    return this.slotData.components[0];
-  }
+  trackById = (_index: number, item: CmsLinkComponent) => item.uid;
 
-  constructor(private slotData: SlotDataService) {}
+  constructor(public readonly slotData: SlotDataService) {}
 }
 
 @NgModule({
   exports: [BottomHeaderSlotComponent],
   declarations: [BottomHeaderSlotComponent],
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, FreeShippingLinkModule],
 })
 export class BottomHeaderSlotModule {}
